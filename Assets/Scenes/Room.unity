@@ -2276,7 +2276,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1565887664197881481}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 38f6bf3d943ac7945842268c9ef1dca6, type: 3}
+  m_Script: {fileID: 11500000, guid: e0a460b5a45745ccbbf055a7a700e497, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_InteractionManager: {fileID: 0}
@@ -2351,6 +2351,12 @@ MonoBehaviour:
   m_Teleporting:
     m_PersistentCalls:
       m_Calls: []
+  m_MaxRange: 4
+  m_Cooldown: 0.5
+  m_FadeDuration: 0.12
+  m_TriggerThreshold: 0.5
+  m_HapticAmplitude: 0.5
+  m_HapticDuration: 0.1
 --- !u!4 &1565887664197881479
 Transform:
   m_ObjectHideFlags: 0
