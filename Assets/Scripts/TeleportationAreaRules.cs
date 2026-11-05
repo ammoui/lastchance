@@ -103,7 +103,7 @@ public class TeleportationAreaRules : TeleportationArea
     {
         var panel = new GameObject("Teleport Fade", typeof(Canvas), typeof(CanvasGroup), typeof(Image));
         panel.transform.SetParent(Camera.main.transform, false);
-        panel.transform.localPosition = new Vector3(0f, 0f, 0.1f);
+        panel.transform.localPosition = new Vector3(0f, 0f, 0.2f);
 
         var canvas = panel.GetComponent<Canvas>();
         canvas.renderMode = RenderMode.WorldSpace;
