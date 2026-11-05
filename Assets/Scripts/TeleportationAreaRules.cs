@@ -7,16 +7,14 @@ using UnityEngine.XR.Interaction.Toolkit.Inputs.Haptics;
 using UnityEngine.XR.Interaction.Toolkit.Interactors;
 using UnityEngine.XR.Interaction.Toolkit.Locomotion.Teleportation;
 
-// Зона телепорта на полу с правилами из диздока:
-// дальность, пауза между прыжками, запрет при рисовании, затемнение и вибрация.
 public class TeleportationAreaRules : TeleportationArea
 {
     [SerializeField] private float maxRange = 4f;
     [SerializeField] private float cooldown = 0.5f;
-    [SerializeField] private float fadeTime = 0.16f; // всё затемнение, туда и обратно
+    [SerializeField] private float fadeTime = 0.16f;
     [SerializeField] private float hapticStrength = 0.5f;
     [SerializeField] private float hapticTime = 0.1f;
-    [SerializeField] private InputActionReference drawAction; // тот же курок, что у палочки
+    [SerializeField] private InputActionReference drawAction;
 
     private CanvasGroup fade;
     private float nextTeleportTime;
@@ -26,7 +24,6 @@ public class TeleportationAreaRules : TeleportationArea
         if (teleportationProvider == null)
             teleportationProvider = FindFirstObjectByType<TeleportationProvider>();
 
-        // Переносим игрока, когда экран уже тёмный
         teleportationProvider.delayTime = fadeTime / 2f;
 
         CreateFade();
@@ -98,7 +95,6 @@ public class TeleportationAreaRules : TeleportationArea
         fade.alpha = target;
     }
 
-    // Чёрная панель прямо перед камерой. Экранный канвас в шлеме не виден, поэтому World Space.
     private void CreateFade()
     {
         var panel = new GameObject("Teleport Fade", typeof(Canvas), typeof(CanvasGroup), typeof(Image));
