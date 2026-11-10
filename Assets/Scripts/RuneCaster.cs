@@ -18,6 +18,7 @@ public class RuneCaster : MonoBehaviour
     [SerializeField] private float maxGestureTime = 2f;
 
     [Header("След")]
+    [SerializeField] private bool fadeTrail = false;
     [SerializeField] private float fadeTime = 0.4f;
     [SerializeField] private float trailWidth = 0.01f;
     [SerializeField] private Color trailColor = new Color(0.1f, 0.9f, 0.85f);
@@ -127,7 +128,8 @@ public class RuneCaster : MonoBehaviour
         LastGesture = new List<Vector3>(points);
         Debug.Log("Жест закончен, точек: " + points.Count);
         GestureFinished?.Invoke(LastGesture);
-        fadeCoroutine = StartCoroutine(FadeTrail());
+        if (fadeTrail)
+            fadeCoroutine = StartCoroutine(FadeTrail());
     }
 
     private IEnumerator FadeTrail()
@@ -148,6 +150,13 @@ public class RuneCaster : MonoBehaviour
     {
         Color color = trailColor;
         color.a = alpha;
+        lineMaterial.SetColor("_BaseColor", color);
+    }
+
+    // Красит след до конца жеста, не трогая trailColor:
+    // в начале следующего жеста SetTrailAlpha вернёт обычный цвет.
+    public void SetTrailColor(Color color)
+    {
         lineMaterial.SetColor("_BaseColor", color);
     }
 }
