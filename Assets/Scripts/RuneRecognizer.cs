@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -29,6 +30,9 @@ public class RuneRecognizer : MonoBehaviour
 
     private List<Vector2> template;
     private List<Vector2> templateReversed;
+
+    // Сюда подпишется RuneProjectileLauncher
+    public event Action<string, float> RuneRecognized;
 
     private void Awake()
     {
@@ -136,7 +140,10 @@ public class RuneRecognizer : MonoBehaviour
         float score = Mathf.Max(Score(prepared, template), Score(prepared, templateReversed));
 
         if (score >= threshold)
+        {
             Debug.Log("Руна распознана: Искра (" + score.ToString("0.00") + ")");
+            RuneRecognized?.Invoke("Искра", score);
+        }
         else
             Debug.Log("Не распознано (" + score.ToString("0.00") + ")");
 
@@ -269,7 +276,7 @@ public class RuneRecognizer : MonoBehaviour
 
         var noisy = new List<Vector2>();
         foreach (Vector2 p in Resample(new List<Vector2>(sparkTemplate), 16))
-            noisy.Add(p + new Vector2(Random.Range(-0.06f, 0.06f), Random.Range(-0.06f, 0.06f)));
+            noisy.Add(p + new Vector2(UnityEngine.Random.Range(-0.06f, 0.06f), UnityEngine.Random.Range(-0.06f, 0.06f)));
         Debug.Log("Тест: кривая молния");
         Recognize(noisy);
 
