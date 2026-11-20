@@ -35,6 +35,16 @@ public class RuneCaster : MonoBehaviour
     public Vector3 WandTipPosition => wandTip != null ? wandTip.position : transform.position;
     public Transform WandTip => wandTip;
 
+    // Направление выстрела — вдоль палочки: от основания к кончику.
+    public Vector3 WandDirection
+    {
+        get
+        {
+            Vector3 dir = WandTipPosition - transform.position;
+            return dir.sqrMagnitude > 0.0001f ? dir.normalized : transform.forward;
+        }
+    }
+
     private readonly List<Vector3> points = new List<Vector3>();
     private LineRenderer line;
     private Material lineMaterial;

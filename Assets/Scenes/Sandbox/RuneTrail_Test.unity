@@ -584,6 +584,7 @@ MonoBehaviour:
   size: 0.05
   targetSearchRadius: 30
   targetTag:
+  maxAimAngle: 60
   projectileColor: {r: 1, g: 0.7, b: 0.2, a: 1}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

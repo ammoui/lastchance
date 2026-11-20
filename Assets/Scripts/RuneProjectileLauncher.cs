@@ -17,6 +17,8 @@ public class RuneProjectileLauncher : MonoBehaviour
     [Header("Цель")]
     [SerializeField] private float targetSearchRadius = 30f;
     [SerializeField] private string targetTag = ""; // пусто = искать по типу EnemyDummy
+    [SerializeField, Tooltip("Максимальный угол от направления палочки, в котором снаряд ещё доводится к цели")]
+    private float maxAimAngle = 60f;
 
     [Header("Внешний вид")]
     [SerializeField] private Color projectileColor = new Color(1f, 0.7f, 0.2f);
@@ -56,11 +58,8 @@ public class RuneProjectileLauncher : MonoBehaviour
         }
 
         Vector3 origin = caster.WandTipPosition;
-        Transform target = FindNearestEnemy(origin);
-        // по умолчанию стреляем куда смотрит камера, снаряд сам доведётся
-        Vector3 dir = Camera.main != null
-            ? Camera.main.transform.forward
-            : caster.transform.forward;
+        Vector3 dir = caster.WandDirection;
+        Transform target = FindNearestEnemy(origin, dir);
 
         Spawn(origin, dir, target);
         Debug.Log("Искра выпущена" + (target != null ? ", цель: " + target.name : " без цели"));
@@ -73,16 +72,26 @@ public class RuneProjectileLauncher : MonoBehaviour
         return cachedCaster;
     }
 
-    private Transform FindNearestEnemy(Vector3 from)
+    private Transform FindNearestEnemy(Vector3 from, Vector3 dir)
     {
         EnemyDummy[] enemies = FindObjectsByType<EnemyDummy>(FindObjectsSortMode.None);
         Transform best = null;
         float bestDist = targetSearchRadius * targetSearchRadius;
+        float cosMax = Mathf.Cos(maxAimAngle * Mathf.Deg2Rad);
         foreach (EnemyDummy e in enemies)
         {
             if (!string.IsNullOrEmpty(targetTag) && !e.CompareTag(targetTag))
                 continue;
-            float d = (e.transform.position - from).sqrMagnitude;
+
+            Vector3 toEnemy = e.transform.position - from;
+            if (toEnemy.sqrMagnitude < 0.0001f)
+                continue;
+            // доводим только к целям в конусе перед палочкой,
+            // чтобы снаряд не заворачивал за спину
+            if (Vector3.Dot(dir, toEnemy.normalized) < cosMax)
+                continue;
+
+            float d = toEnemy.sqrMagnitude;
             if (d < bestDist)
             {
                 bestDist = d;
