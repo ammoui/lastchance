@@ -31,6 +31,10 @@ public class RuneCaster : MonoBehaviour
     public event Action<List<Vector3>> GestureFinished;
     public List<Vector3> LastGesture { get; private set; } = new List<Vector3>();
 
+    // Позиция кончика палочки: отсюда вылетает снаряд заклинания
+    public Vector3 WandTipPosition => wandTip != null ? wandTip.position : transform.position;
+    public Transform WandTip => wandTip;
+
     private readonly List<Vector3> points = new List<Vector3>();
     private LineRenderer line;
     private Material lineMaterial;
