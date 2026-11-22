@@ -13,6 +13,7 @@ public class RuneProjectileLauncher : MonoBehaviour
     [SerializeField] private float hitRadius = 0.25f;
     [SerializeField] private float lifetime = 4f;
     [SerializeField] private float size = 0.05f;
+    [SerializeField] private int damage = 2;
 
     [Header("Цель")]
     [SerializeField] private float targetSearchRadius = 30f;
@@ -107,6 +108,6 @@ public class RuneProjectileLauncher : MonoBehaviour
         go.GetComponent<Renderer>().material = mat;
 
         var proj = go.AddComponent<RuneProjectile>();
-        proj.Init(origin, dir, target, mat, speed, turnSpeed, hitRadius, lifetime);
+        proj.Init(origin, dir, target, mat, speed, turnSpeed, hitRadius, lifetime, damage);
     }
 }
