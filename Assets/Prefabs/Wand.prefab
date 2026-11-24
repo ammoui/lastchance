@@ -318,6 +318,7 @@ MonoBehaviour:
   minPointStep: 0.01
   minGestureTime: 0.2
   maxGestureTime: 2
+  fadeTrail: 1
   fadeTime: 0.4
   trailWidth: 0.01
   trailColor: {r: 0.1, g: 0.9, b: 0.85, a: 1}

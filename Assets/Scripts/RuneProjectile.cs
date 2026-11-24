@@ -57,23 +57,29 @@ public class RuneProjectile : MonoBehaviour
                 turnSpeed * Mathf.Deg2Rad * Time.deltaTime, 0f);
             if (rotated.sqrMagnitude > 0.0001f)
                 direction = rotated;
-
-            // попадание — по ближайшей точке коллайдера (меша), а не по центру
-            float distance = targetCollider != null
-                ? Vector3.Distance(targetCollider.ClosestPoint(transform.position), transform.position)
-                : toTarget.magnitude;
-            if (distance <= hitRadius)
-            {
-                var enemy = target.GetComponent<EnemyDummy>();
-                if (enemy != null)
-                    enemy.TakeDamage(damage);
-                Debug.Log("Искра попала по " + target.name + " (урон " + damage + ")");
-                Destroy(gameObject);
-                return;
-            }
         }
 
-        transform.position += direction * (speed * Time.deltaTime);
+        // попадание: луч по траектории полёта за этот кадр.
+        // работает и без автонаводки: снаряд просто летит прямо
+        // и врезается в первый коллайдер на пути
+        float step = speed * Time.deltaTime;
+        if (Physics.Raycast(transform.position, direction, out RaycastHit hit, step + hitRadius))
+        {
+            var enemy = hit.collider.GetComponentInParent<EnemyDummy>();
+            if (enemy != null)
+            {
+                enemy.TakeDamage(damage);
+                Debug.Log("Искра попала по " + enemy.name + " (урон " + damage + ")");
+            }
+            else
+            {
+                Debug.Log("Искра разбилась о " + hit.collider.name);
+            }
+            Destroy(gameObject);
+            return;
+        }
+
+        transform.position += direction * step;
         transform.rotation = Quaternion.LookRotation(direction);
     }
 
