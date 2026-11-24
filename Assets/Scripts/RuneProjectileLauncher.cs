@@ -13,10 +13,12 @@ public class RuneProjectileLauncher : MonoBehaviour
     [SerializeField] private float hitRadius = 0.25f;
     [SerializeField] private float lifetime = 4f;
     [SerializeField] private float size = 0.05f;
+    [SerializeField] private int damage = 2;
 
     [Header("Цель")]
     [SerializeField] private float targetSearchRadius = 30f;
     [SerializeField] private string targetTag = ""; // пусто = искать по типу EnemyDummy
+    [SerializeField] private bool homing = false; // автонаводка выключена: летит прямо
 
     [Header("Внешний вид")]
     [SerializeField] private Color projectileColor = new Color(1f, 0.7f, 0.2f);
@@ -56,8 +58,8 @@ public class RuneProjectileLauncher : MonoBehaviour
         }
 
         Vector3 origin = caster.WandTipPosition;
-        Transform target = FindNearestEnemy(origin);
-        // по умолчанию стреляем куда смотрит камера, снаряд сам доведётся
+        // цель только при включённой автонаводке; по умолчанию снаряд летит прямо
+        Transform target = homing ? FindNearestEnemy(origin) : null;
         Vector3 dir = Camera.main != null
             ? Camera.main.transform.forward
             : caster.transform.forward;
@@ -107,6 +109,6 @@ public class RuneProjectileLauncher : MonoBehaviour
         go.GetComponent<Renderer>().material = mat;
 
         var proj = go.AddComponent<RuneProjectile>();
-        proj.Init(origin, dir, target, mat, speed, turnSpeed, hitRadius, lifetime);
+        proj.Init(origin, dir, target, mat, speed, turnSpeed, hitRadius, lifetime, damage);
     }
 }
