@@ -16,6 +16,19 @@ public class EnemyDummy : MonoBehaviour
     [SerializeField, Tooltip("Дистанция остановки от игрока, м")]
     private float stoppingDistance = 1.3f;
 
+    [Header("Зрение")]
+    [SerializeField, Tooltip("Бежать к игроку только при прямой видимости")]
+    private bool requireLineOfSight = true;
+
+    [SerializeField, Tooltip("Высота 'глаз' над опорной точкой моба, м")]
+    private float eyeHeight = 1.6f;
+
+    [SerializeField, Tooltip("Дальность зрения, м")]
+    private float viewDistance = 30f;
+
+    [SerializeField, Tooltip("Слои, которые заслоняют обзор (стены, колонны)")]
+    private LayerMask occlusionMask = ~0; // всё
+
     [Header("Здоровье")]
     [SerializeField] private int maxHealth = 4;
     [SerializeField] private float healthBarHeight = 2.2f;
@@ -58,12 +71,44 @@ public class EnemyDummy : MonoBehaviour
         if (cam == null)
             return;
 
+        Vector3 target = cam.transform.position;
+
+        if (requireLineOfSight && !CanSee(target))
+        {
+            // Игрока не видно — стоим на месте.
+            agent.isStopped = true;
+            return;
+        }
+
         // Позицию игрока берём с камеры, а не с корня рига:
         // при движении головы риг остаётся на месте.
-        Vector3 target = cam.transform.position;
         target.y = transform.position.y; // цель на уровне пола, а не на высоте головы
 
+        agent.isStopped = false;
         agent.SetDestination(target);
+    }
+
+    /// <summary>
+    /// Прямая видимость: луч от "глаз" моба к камере не должен упираться
+    /// в геометрию сцены. Попадание в самого игрока (его риг)
+    /// помехой не считается — значит, мы его видим.
+    /// </summary>
+    private bool CanSee(Vector3 target)
+    {
+        Vector3 eye = transform.position + Vector3.up * eyeHeight;
+        Vector3 toTarget = target - eye;
+
+        if (toTarget.magnitude > viewDistance)
+            return false;
+
+        if (!Physics.Raycast(eye, toTarget.normalized, out RaycastHit hit, toTarget.magnitude, occlusionMask))
+            return true; // на пути луча вообще ничего нет
+
+        Camera cam = Camera.main;
+        if (cam != null && hit.transform.IsChildOf(cam.transform.root))
+            return true; // луч упёрся в самого игрока
+
+        return false; // между мобом и игроком стена или колонна
     }
 
     private void OnValidate()
