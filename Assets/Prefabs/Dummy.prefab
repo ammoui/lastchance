@@ -129,6 +129,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemyDummy
   speed: 2.5
   stoppingDistance: 1.3
+  requireLineOfSight: 1
+  eyeHeight: 1.6
+  viewDistance: 30
+  occlusionMask:
+    serializedVersion: 2
+    m_Bits: 4294967295
   maxHealth: 4
   healthBarHeight: 2.2
 --- !u!136 &8827410953112746190
